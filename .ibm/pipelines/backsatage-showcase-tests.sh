@@ -108,12 +108,12 @@ echo "$DIR"
 
 oc login --token=${K8S_CLUSTER_TOKEN} --server=${K8S_CLUSTER_URL}
 
-# create a name space if not exist
-if ! oc get namespace ${NAME_SPACE} > /dev/null 2>&1; then
-    oc create namespace ${NAME_SPACE}
-else
-    echo "Namespace ${NAME_SPACE} already exists!"
+# refresh the name space if exists
+if oc get namespace ${NAME_SPACE} > /dev/null 2>&1; then
+    echo "Namespace ${NAME_SPACE} already exists! refreshing namespace"
+    oc delete namespace ${NAME_SPACE}
 fi
+oc create namespace ${NAME_SPACE}
 
 oc config set-context --current --namespace=${NAME_SPACE}
 
@@ -169,6 +169,7 @@ oc apply -f $DIR/resources/config_map/configmap-app-config-rhdh.yaml --namespace
 add_helm_repos
 
 docker version
+docker build . -f $DIR/../../docker/Dockerfile --tag backstage-showcase:pr
 
 helm upgrade -i ${RELEASE_NAME} -n ${NAME_SPACE} ${HELM_REPO_NAME}/${HELM_IMAGE_NAME} -f $DIR/value_files/${HELM_CHART_VALUE_FILE_NAME} --set global.clusterRouterBase=${K8S_CLUSTER_ROUTER_BASE}
 

@@ -91,9 +91,8 @@ jobs:
           echo "Installing IBM Cloud CLI..."
           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
       - name: Authenticate with IBM Cloud
-        run: echo "My resource group is ${{ vars.IBM_RSC_GROUP }}"
-        # run: |
-          # ibmcloud login -r eu-de  -g ${{ vars.IBM_RSC_GROUP }} --apikey ${{ secrets.SERVICE_ID_API_KEY }} 
+        run: |
+          ibmcloud login -r eu-de  -g ${{ vars.IBM_RSC_GROUP }} --apikey ${{ secrets.SERVICE_ID_API_KEY }} 
       - name: Trigger IBM Cloud Toolchain
         if: success()
         run: |

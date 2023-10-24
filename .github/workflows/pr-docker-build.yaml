@@ -86,6 +86,19 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-      - name: Run tests
-        run: echo "Running tests..."
-
+      - name: Install IBM Cloud CLI
+        run: |
+          echo "Installing IBM Cloud CLI..."
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+      - name: Authenticate with IBM Cloud
+        run: |
+          ibmcloud login -r eu-de  -g ${{ secrets.IBM_RSC_GROUP }} --apikey ${{ secrets.IBM_CLOUD_API_KEY }} 
+      - name: Trigger IBM Cloud Toolchain
+        if: success()
+        run: |
+          # IBM Cloud commands to trigger the toolchain or deploy the application
+          echo "Trigger toolchain"
+      - name: Check previous step
+        if: success()
+        run: |
+          echo "Previous steps were successful!"

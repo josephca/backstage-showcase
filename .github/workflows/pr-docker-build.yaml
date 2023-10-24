@@ -90,14 +90,20 @@ jobs:
         run: |
           echo "Installing IBM Cloud CLI..."
           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+      - name: Install/update the DevOps plugin
+        run: |
+          echo "Install/update the DevOps plugin..."
+          ibmcloud plugin install dev -r 'IBM Cloud'
+          ibmcloud plugin update
       - name: Authenticate with IBM Cloud
         run: |
-          ibmcloud login -r eu-de  -g ${{ vars.IBM_RSC_GROUP }} --apikey ${{ secrets.SERVICE_ID_API_KEY }} 
-      - name: Trigger IBM Cloud Toolchain
+          ibmcloud login -r ${{ vars.IBM_REGION }}  -g ${{ vars.IBM_RSC_GROUP }} --apikey ${{ secrets.SERVICE_ID_API_KEY }} 
+      - name: Trigger IBM Cloud pipeline
         if: success()
         run: |
-          # IBM Cloud commands to trigger the toolchain or deploy the application
-          echo "Trigger toolchain"
+          # IBM Cloud commands to trigger the pipeline
+          echo "Trigger the pipeline..."
+          ibmcloud dev pipeline-run ${{ secrets.IBM_PIPELINE_ID }}
       - name: Check previous step
         if: success()
         run: |

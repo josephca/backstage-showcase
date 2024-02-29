@@ -93,3 +93,6 @@ AUTHORS eol=lf
 *.woff binary
 *.pyc binary
 *.pdf binary
+
+# git-crypt : filter to files that should be encrypted
+.ibm/**/*.key.properties filter=git-crypt diff=git-crypt

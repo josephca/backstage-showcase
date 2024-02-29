@@ -65,3 +65,6 @@ dynamic-plugins/*/dist-dynamic/src
 .webpack-cache
 .idea/
 .idea/
+
+# git-crypt files
+.git-crypt/

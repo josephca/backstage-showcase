@@ -2,7 +2,8 @@
 
 set -e
 
-LOGFILE="pr-${GIT_PR_NUMBER}-openshift-tests-${BUILD_NUMBER}"
+# LOGFILE="pr-${GIT_PR_NUMBER}-openshift-tests-${BUILD_NUMBER}"
+LOGFILE="manual-openshift-tests-${BUILD_NUMBER}"
 TEST_NAME="backstage-showcase Tests"
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -70,6 +71,13 @@ install_helm() {
   fi
 }
 
+uninstall_helmchart() {
+  if helm list -n ${NAME_SPACE} | grep -q ${RELEASE_NAME}; then
+    echo "Chart already exists. Removing it before install."
+    helm uninstall ${RELEASE_NAME} -n ${NAME_SPACE}
+  fi
+}
+
 configure_namespace() {
   if oc get namespace ${NAME_SPACE} >/dev/null 2>&1; then
     echo "Namespace ${NAME_SPACE} already exists! refreshing namespace"
@@ -127,7 +135,6 @@ apply_yaml_files() {
   # re-apply with the updated cluster service account token
   oc apply -f $dir/auth/secrets-rhdh-secrets.yaml --namespace=${NAME_SPACE}
   oc apply -f $dir/resources/config_map/configmap-app-config-rhdh.yaml --namespace=${NAME_SPACE}
-  oc apply -f $dir/resources/config_map/configmap-rbac-policy-rhdh.yaml --namespace=${NAME_SPACE}
 }
 
 run_tests() {
@@ -148,7 +155,7 @@ run_tests() {
 
   pkill Xvfb
 
-  save_logs "${LOGFILE}" "${TEST_NAME}" ${RESULT}
+  # save_logs "${LOGFILE}" "${TEST_NAME}" ${RESULT}
 
   exit ${RESULT}
 }
@@ -181,7 +188,7 @@ check_backstage_running() {
   done
 
   echo "Failed to reach Backstage at $BASE_URL after $max_attempts attempts." | tee -a "/tmp/${LOGFILE}"
-  save_logs "${LOGFILE}" "${TEST_NAME}" 1
+  # save_logs "${LOGFILE}" "${TEST_NAME}" 1
 
   return 1
 }
@@ -190,7 +197,7 @@ main() {
   echo "Log file: ${LOGFILE}"
 
   source ./.ibm/pipelines/functions.sh
-  skip_if_only
+  # skip_if_only
 
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -206,8 +213,9 @@ main() {
   oc version --client
   oc login --token=${K8S_CLUSTER_TOKEN} --server=${K8S_CLUSTER_URL}
 
-  configure_namespace
   install_helm
+  uninstall_helmchart
+  configure_namespace
 
   cd $DIR
   apply_yaml_files $DIR

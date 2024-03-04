@@ -109,7 +109,7 @@ apply_yaml_files() {
   # done
 
   sed -i "s/$GITHUB_APP_APP_ID:.*/$GITHUB_APP_APP_ID: ${!GITHUB_APP_APP_ID}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
-  sed -i "s/$GITHUB_APP_CLIENT_ID:.*/$GITHUB_APP_CLIENT_ID: ${!GITHUB_APP_CLIENT_ID}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
+  # sed -i "s/$GITHUB_APP_CLIENT_ID:.*/$GITHUB_APP_CLIENT_ID: ${!GITHUB_APP_CLIENT_ID}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
   sed -i "s/$GITHUB_APP_PRIVATE_KEY:.*/$GITHUB_APP_PRIVATE_KEY: ${!GITHUB_APP_PRIVATE_KEY}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
   sed -i "s/$GITHUB_APP_CLIENT_SECRET:.*/$GITHUB_APP_CLIENT_SECRET: ${!GITHUB_APP_CLIENT_SECRET}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
   sed -i "s/$GITHUB_APP_WEBHOOK_URL:.*/$GITHUB_APP_WEBHOOK_URL: ${!GITHUB_APP_WEBHOOK_URL}/g" "$dir/auth/secrets-rhdh-secrets.yaml"

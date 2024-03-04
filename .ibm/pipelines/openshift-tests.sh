@@ -104,9 +104,9 @@ apply_yaml_files() {
   # Add additional configurations
   sed -i "s/backstage.io\/kubernetes-id:.*/backstage.io\/kubernetes-id: $K8S_PLUGIN_ANNOTATION/g" "$dir/resources/deployment/deployment-test-app-component.yaml"
 
-  # for key in GITHUB_APP_APP_ID GITHUB_APP_CLIENT_ID GITHUB_APP_PRIVATE_KEY GITHUB_APP_CLIENT_SECRET GITHUB_APP_WEBHOOK_URL GITHUB_APP_WEBHOOK_SECRET KEYCLOAK_CLIENT_SECRET OCM_CLUSTER_TOKEN ACR_SECRET GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET; do
-  #   sed -i "s/$key:.*/$key: ${!key}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
-  # done
+  for key in GITHUB_APP_APP_ID GITHUB_APP_CLIENT_ID GITHUB_APP_PRIVATE_KEY GITHUB_APP_CLIENT_SECRET GITHUB_APP_WEBHOOK_URL GITHUB_APP_WEBHOOK_SECRET KEYCLOAK_CLIENT_SECRET OCM_CLUSTER_TOKEN ACR_SECRET GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET; do
+    sed -i "s/$key:.*/$key: ${!key}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
+  done
 
   oc apply -f $dir/resources/service_account/service-account-rhdh.yaml --namespace=${NAME_SPACE}
   oc apply -f $dir/auth/service-account-rhdh-secret.yaml --namespace=${NAME_SPACE}

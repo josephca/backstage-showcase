@@ -98,18 +98,15 @@ apply_yaml_files() {
     "$dir/auth/secrets-rhdh-secrets.yaml")
 
   for file in "${files[@]}"; do
-    echo "DEBUG: 1. within apply_yaml_files"
     sed -i "s/namespace:.*/namespace: $NAME_SPACE/g" "$file"
   done
 
   # Add additional configurations
-  echo "DEBUG: 2. within apply_yaml_files"
   sed -i "s/backstage.io\/kubernetes-id:.*/backstage.io\/kubernetes-id: $K8S_PLUGIN_ANNOTATION/g" "$dir/resources/deployment/deployment-test-app-component.yaml"
 
-  echo "DEBUG: 3. within apply_yaml_files"
-  for key in GITHUB_APP_APP_ID GITHUB_APP_CLIENT_ID GITHUB_APP_PRIVATE_KEY GITHUB_APP_CLIENT_SECRET GITHUB_APP_WEBHOOK_URL GITHUB_APP_WEBHOOK_SECRET KEYCLOAK_CLIENT_SECRET OCM_CLUSTER_TOKEN ACR_SECRET GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET; do
-    sed -i "s/$key:.*/$key: ${!key}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
-  done
+  # for key in GITHUB_APP_APP_ID GITHUB_APP_CLIENT_ID GITHUB_APP_PRIVATE_KEY GITHUB_APP_CLIENT_SECRET GITHUB_APP_WEBHOOK_URL GITHUB_APP_WEBHOOK_SECRET KEYCLOAK_CLIENT_SECRET OCM_CLUSTER_TOKEN ACR_SECRET GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET; do
+  #   sed -i "s/$key:.*/$key: ${!key}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
+  # done
 
   oc apply -f $dir/resources/service_account/service-account-rhdh.yaml --namespace=${NAME_SPACE}
   oc apply -f $dir/auth/service-account-rhdh-secret.yaml --namespace=${NAME_SPACE}
@@ -128,7 +125,6 @@ apply_yaml_files() {
 
   TOKEN=$(grep 'token:' $dir/auth/service-account-rhdh-token.yaml | awk '{print $2}')
 
-  echo "DEBUG: 4. within apply_yaml_files"
   sed -i "s/K8S_SERVICE_ACCOUNT_TOKEN:.*/K8S_SERVICE_ACCOUNT_TOKEN: $TOKEN/g" $dir/auth/secrets-rhdh-secrets.yaml
 
   # Cleanup temp file

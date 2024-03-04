@@ -1,0 +1,7 @@
+[allowlist]
+  description = "The key files are git-encrypted on commit, so bypasss the check."
+
+  paths = [
+    # Ignore some long path
+    '''\.ibm\/pipelines\/.*\.key.properties$''',
+  ]

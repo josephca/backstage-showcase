@@ -108,12 +108,14 @@ apply_yaml_files() {
   #   sed -i "s/$key:.*/$key: ${!key}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
   # done
 
+  echo "GITHUB_APP_APP_ID is $GITHUB_APP_APP_ID"
+  echo "GITHUB_APP_CLIENT_ID is $GITHUB_APP_CLIENT_ID"
   sed -i "s/$GITHUB_APP_APP_ID:.*/$GITHUB_APP_APP_ID: ${!GITHUB_APP_APP_ID}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
-  # sed -i "s/$GITHUB_APP_CLIENT_ID:.*/$GITHUB_APP_CLIENT_ID: ${!GITHUB_APP_CLIENT_ID}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
-  sed -i "s/$GITHUB_APP_PRIVATE_KEY:.*/$GITHUB_APP_PRIVATE_KEY: ${!GITHUB_APP_PRIVATE_KEY}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
-  sed -i "s/$GITHUB_APP_CLIENT_SECRET:.*/$GITHUB_APP_CLIENT_SECRET: ${!GITHUB_APP_CLIENT_SECRET}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
-  sed -i "s/$GITHUB_APP_WEBHOOK_URL:.*/$GITHUB_APP_WEBHOOK_URL: ${!GITHUB_APP_WEBHOOK_URL}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
-  sed -i "s/$GITHUB_APP_WEBHOOK_SECRET:.*/$GITHUB_APP_WEBHOOK_SECRET: ${!GITHUB_APP_WEBHOOK_SECRET}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
+  sed -i "s/$GITHUB_APP_CLIENT_ID:.*/$GITHUB_APP_CLIENT_ID: ${!GITHUB_APP_CLIENT_ID}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
+  # sed -i "s/$GITHUB_APP_PRIVATE_KEY:.*/$GITHUB_APP_PRIVATE_KEY: ${!GITHUB_APP_PRIVATE_KEY}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
+  # sed -i "s/$GITHUB_APP_CLIENT_SECRET:.*/$GITHUB_APP_CLIENT_SECRET: ${!GITHUB_APP_CLIENT_SECRET}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
+  # sed -i "s/$GITHUB_APP_WEBHOOK_URL:.*/$GITHUB_APP_WEBHOOK_URL: ${!GITHUB_APP_WEBHOOK_URL}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
+  # sed -i "s/$GITHUB_APP_WEBHOOK_SECRET:.*/$GITHUB_APP_WEBHOOK_SECRET: ${!GITHUB_APP_WEBHOOK_SECRET}/g" "$dir/auth/secrets-rhdh-secrets.yaml"
   
   oc apply -f $dir/resources/service_account/service-account-rhdh.yaml --namespace=${NAME_SPACE}
   oc apply -f $dir/auth/service-account-rhdh-secret.yaml --namespace=${NAME_SPACE}

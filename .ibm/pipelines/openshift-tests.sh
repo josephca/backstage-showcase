@@ -148,13 +148,13 @@ run_tests() {
 
   pkill Xvfb
 
-  save_logs "${LOGFILE}" "${TEST_NAME}" ${RESULT}
+  # save_logs "${LOGFILE}" "${TEST_NAME}" ${RESULT}
 
   exit ${RESULT}
 }
 
 check_backstage_running() {
-  local url="https://${RELEASE_NAME}-backstage-${NAME_SPACE}.${K8S_CLUSTER_ROUTER_BASE}"
+  local url="https://${RELEASE_NAME}-${NAME_SPACE}.${K8S_CLUSTER_ROUTER_BASE}"
 
   # Maximum number of attempts to check URL
   local max_attempts=30
@@ -190,7 +190,7 @@ main() {
   echo "Log file: ${LOGFILE}"
 
   source ./.ibm/pipelines/functions.sh
-  skip_if_only
+  # skip_if_only
 
   DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

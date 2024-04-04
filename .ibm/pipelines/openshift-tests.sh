@@ -21,6 +21,9 @@ add_helm_repos() {
 
   declare -a repos=("bitnami=https://charts.bitnami.com/bitnami" \
     "backstage=https://backstage.github.io/charts" \
+    # for rhdh test: "rhdh-chart=https://redhat-developer.github.io/rhdh-chart" \
+    # for 1.1.x test: "openshift-helm-charts=https://charts.openshift.io/ 
+    #     chart name: redhat-developer-hub  
     "${HELM_REPO_NAME}=${HELM_REPO_URL}")
 
   for repo in "${repos[@]}"; do
@@ -72,6 +75,13 @@ install_helm() {
   fi
 }
 
+uninstall_helmchart() {
+  if helm list -n ${NAME_SPACE} | grep -q ${RELEASE_NAME}; then
+    echo "Chart already exists. Removing it before install."
+    helm uninstall ${RELEASE_NAME} -n ${NAME_SPACE}
+  fi
+}
+
 configure_namespace() {
   if oc get namespace ${NAME_SPACE} >/dev/null 2>&1; then
     echo "Namespace ${NAME_SPACE} already exists! refreshing namespace"
@@ -120,6 +130,8 @@ apply_yaml_files() {
   TOKEN=$(grep 'token:' $dir/auth/service-account-rhdh-token.yaml | awk '{print $2}')
 
   sed -i "s/K8S_SERVICE_ACCOUNT_TOKEN:.*/K8S_SERVICE_ACCOUNT_TOKEN: $TOKEN/g" $dir/auth/secrets-rhdh-secrets.yaml
+  # sed -i "s/K8S_CLUSTER_API_SERVER_URL:.*/K8S_CLUSTER_API_SERVER_URL: $ENCODED_API_SERVER_URL/g" $dir/auth/secrets-rhdh-secrets.yaml
+  # sed -i "s/K8S_CLUSTER_NAME:.*/K8S_CLUSTER_NAME: $ENCODED_CLUSTER_NAME/g" $dir/auth/secrets-rhdh-secrets.yaml
 
   # Cleanup temp file
   rm $dir/auth/service-account-rhdh-token.yaml
@@ -130,6 +142,11 @@ apply_yaml_files() {
   oc apply -f $dir/auth/secrets-rhdh-secrets.yaml --namespace=${NAME_SPACE}
   oc apply -f $dir/resources/config_map/configmap-app-config-rhdh.yaml --namespace=${NAME_SPACE}
   oc apply -f $dir/resources/config_map/configmap-rbac-policy-rhdh.yaml --namespace=${NAME_SPACE}
+
+  # pipelines (required for tekton)
+  # sleep 20 # wait for Pipeline Operator to be ready
+  # oc apply -f "$dir"/resources/pipeline-run/hello-world-pipeline.yaml
+  # oc apply -f "$dir"/resources/pipeline-run/hello-world-pipeline-run.yaml
 }
 
 run_tests() {
@@ -167,7 +184,7 @@ check_backstage_running() {
 
   for ((i=1; i<=max_attempts; i++)); do
     # Get the status code
-    local http_status=$(curl -I -s "$url" | grep HTTP | awk '{print $2}')
+    local http_status=$(curl --insecure -I -s "$url" | grep HTTP | awk '{print $2}')
 
     # Check if the status code is 200
     if [[ $http_status -eq 200 ]]; then
@@ -186,6 +203,22 @@ check_backstage_running() {
   save_logs "${LOGFILE}" "${TEST_NAME}" 1
 
   return 1
+}
+
+# Required for tekton plugin
+# Red Hat OpenShift Pipelines is a cloud-native continuous integration and delivery (CI/CD)
+# Solution for building pipelines using Tekton.
+installPipelinesOperator() {
+  local dir=$1
+  DISPLAY_NAME="Red Hat OpenShift Pipelines"
+
+  if oc get csv -n "openshift-operators" | grep -q "$DISPLAY_NAME"; then
+    echo "Red Hat OpenShift Pipelines operator is already installed."
+  else
+    echo "Red Hat OpenShift Pipelines operator is not installed. Installing..."
+    oc apply -f "$dir"/resources/pipeline-run/pipelines-operator.yaml
+  fi
+
 }
 
 main() {
@@ -208,12 +241,20 @@ main() {
   oc version --client
   oc login --token=${K8S_CLUSTER_TOKEN} --server=${K8S_CLUSTER_URL}
 
+  # API_SERVER_URL=$(oc whoami --show-server)
+  # K8S_CLUSTER_ROUTER_BASE=$(oc get route console -n openshift-console -o=jsonpath='{.spec.host}' | sed 's/^[^.]*\.//')
+
+  # Encode in Base64
+  # ENCODED_API_SERVER_URL=$(echo "$API_SERVER_URL" | base64)
+  # ENCODED_CLUSTER_NAME=$(echo "my-cluster" | base64)
+
   configure_namespace
+  # installPipelinesOperator $DIR
   install_helm
+  uninstall_helmchart
 
   cd $DIR
   apply_yaml_files $DIR
-
   add_helm_repos
 
   echo "Tag name : ${TAG_NAME}"

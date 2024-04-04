@@ -38,8 +38,8 @@ global:
           disabled: false
         - package: ./dynamic-plugins/dist/janus-idp-backstage-plugin-quay
           disabled: false
-        # - package: ./dynamic-plugins/dist/janus-idp-backstage-plugin-keycloak-backend-dynamic
-        #   disabled: false
+        - package: ./dynamic-plugins/dist/janus-idp-backstage-plugin-keycloak-backend-dynamic
+          disabled: false
         - package: ./dynamic-plugins/dist/backstage-plugin-kubernetes-backend-dynamic
           disabled: false
           pluginConfig:
@@ -128,6 +128,7 @@ upstream:
       registry: quay.io
       repository: rhdh/rhdh-hub-rhel9
       tag: 1.1-102
+      
       # repository: janus-idp/backstage-showcase
       # tag: next
       
@@ -203,7 +204,7 @@ upstream:
       - name: dynamic-plugins-root
         emptyDir: {}
       - name: rbac-policy
-        configMap: 
+        configMap:
           defaultMode: 420
           name: rbac-policy
 

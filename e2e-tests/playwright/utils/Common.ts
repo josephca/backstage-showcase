@@ -14,8 +14,9 @@ export class Common {
   }
 
   async loginAsGuest() {
-    // await this.page.goto('/');
-    await this.page.goto('https://developer-hub-backstage-rhdh-test.rhdh-pr-os-a9805650830b22c3aee243e51d79565d-0000.us-east.containers.appdomain.cloud/');
+    await this.page.goto('/');
+    // await this.page.goto(process.env.BASE_URL);
+    await this.page.waitForLoadState('load'); 
     await this.uiHelper.verifyHeading('Select a sign-in method');
     await this.uiHelper.clickButton('Enter');
     await this.uiHelper.waitForSideBarVisible();
@@ -48,8 +49,9 @@ export class Common {
 
   async loginAsGithubUser() {
     await this.logintoGithub();
-    // await this.page.goto('/');
-    await this.page.goto('https://developer-hub-backstage-rhdh-test.rhdh-pr-os-a9805650830b22c3aee243e51d79565d-0000.us-east.containers.appdomain.cloud/');
+    await this.page.goto('/');
+    // await this.page.goto(process.env.BASE_URL);
+    await this.page.waitForLoadState('load'); 
     await this.uiHelper.clickButton('Sign In');
     await this.checkAndReauthorizeGithubApp();
     await this.uiHelper.waitForSideBarVisible();

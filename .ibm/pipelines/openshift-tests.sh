@@ -161,7 +161,8 @@ run_tests() {
 
   pkill Xvfb
 
-  save_logs "${LOGFILE}" "${TEST_NAME}" ${RESULT}
+  # commented out temporarily
+  # save_logs "${LOGFILE}" "${TEST_NAME}" ${RESULT}
 
   exit ${RESULT}
 }
@@ -194,7 +195,7 @@ check_backstage_running() {
   done
 
   echo "Failed to reach Backstage at $BASE_URL after $max_attempts attempts." | tee -a "/tmp/${LOGFILE}"
-  save_logs "${LOGFILE}" "${TEST_NAME}" 1
+  # save_logs "${LOGFILE}" "${TEST_NAME}" 1
 
   return 1
 }

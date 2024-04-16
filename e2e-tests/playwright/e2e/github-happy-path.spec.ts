@@ -30,7 +30,7 @@ test.describe.serial('GitHub Happy path', () => {
     await common.loginAsGithubUser();
   });
 
-  test('TEST_0: Verify Profile is Github Account Name in the Settings page', async () => {
+  test('Verify Profile is Github Account Name in the Settings page', async () => {
     await uiHelper.openSidebar('Settings');
     await expect(page).toHaveURL(process.env.BASE_URL + '/settings');
     await uiHelper.verifyHeading(process.env.GH_USER_ID as string);
@@ -66,9 +66,7 @@ test.describe.serial('GitHub Happy path', () => {
 
     await uiHelper.selectMuiBox('Kind', 'User');
     await uiHelper.verifyRowsInTable([
-      'Subhash Khileri',
-      'Joseph Kim',
-      'Gustavo Lira e Silva',
+      'Guest User',
       'rhdh-qe',
     ]);
     await uiHelper.selectMuiBox('Kind', 'System');
@@ -87,6 +85,7 @@ test.describe.serial('GitHub Happy path', () => {
   });
 
   test('Click login on the login popup and verify that Overview tab renders', async () => {
+    await uiHelper.openSidebar('Catalog');
     await uiHelper.selectMuiBox('Kind', 'Component');
     await uiHelper.clickLink('Backstage Showcase');
     await common.clickOnGHloginPopup();

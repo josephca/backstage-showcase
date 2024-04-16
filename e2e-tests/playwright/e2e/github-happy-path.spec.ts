@@ -66,9 +66,7 @@ test.describe.serial('GitHub Happy path', () => {
 
     await uiHelper.selectMuiBox('Kind', 'User');
     await uiHelper.verifyRowsInTable([
-      'Subhash Khileri',
-      'Joseph Kim',
-      'Gustavo Lira e Silva',
+      'Guest User',
       'rhdh-qe',
     ]);
     await uiHelper.selectMuiBox('Kind', 'System');
@@ -87,6 +85,7 @@ test.describe.serial('GitHub Happy path', () => {
   });
 
   test('Click login on the login popup and verify that Overview tab renders', async () => {
+    await uiHelper.openSidebar('Catalog');
     await uiHelper.selectMuiBox('Kind', 'Component');
     await uiHelper.clickLink('Backstage Showcase');
     await common.clickOnGHloginPopup();

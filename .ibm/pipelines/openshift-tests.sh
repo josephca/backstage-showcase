@@ -138,8 +138,9 @@ apply_yaml_files() {
 
   # pipelines (required for tekton)
   sleep 20 # wait for Pipeline Operator to be ready
-  oc apply -f "$dir"/resources/pipeline-run/hello-world-pipeline.yaml
-  oc apply -f "$dir"/resources/pipeline-run/hello-world-pipeline-run.yaml
+  # JOSKIM: commented out temporarily
+  # oc apply -f "$dir"/resources/pipeline-run/hello-world-pipeline.yaml
+  # oc apply -f "$dir"/resources/pipeline-run/hello-world-pipeline-run.yaml
 }
 
 run_tests() {
@@ -160,7 +161,8 @@ run_tests() {
 
   pkill Xvfb
 
-  save_logs "${LOGFILE}" "${TEST_NAME}" ${RESULT}
+  # commented out temporarily
+  # save_logs "${LOGFILE}" "${TEST_NAME}" ${RESULT}
 
   exit ${RESULT}
 }
@@ -193,7 +195,7 @@ check_backstage_running() {
   done
 
   echo "Failed to reach Backstage at $BASE_URL after $max_attempts attempts." | tee -a "/tmp/${LOGFILE}"
-  save_logs "${LOGFILE}" "${TEST_NAME}" 1
+  # save_logs "${LOGFILE}" "${TEST_NAME}" 1
 
   return 1
 }
@@ -252,7 +254,9 @@ main() {
 
   echo "Tag name : ${TAG_NAME}"
 
-  helm upgrade -i ${RELEASE_NAME} -n ${NAME_SPACE} rhdh-chart/backstage --version ${CHART_VERSION} -f $DIR/value_files/${HELM_CHART_VALUE_FILE_NAME} --set global.clusterRouterBase=${K8S_CLUSTER_ROUTER_BASE} --set upstream.backstage.image.tag=${TAG_NAME}
+  helm upgrade -i ${RELEASE_NAME} -n ${NAME_SPACE} rhdh-chart/backstage --version ${CHART_VERSION} \
+      -f $DIR/value_files/${HELM_CHART_VALUE_FILE_NAME} --set global.clusterRouterBase=${K8S_CLUSTER_ROUTER_BASE} \
+      --set upstream.backstage.image.tag=${TAG_NAME}
 
   check_backstage_running
   backstage_status=$?

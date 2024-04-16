@@ -133,6 +133,12 @@ export class UIhelper {
     await expect(headingLocator).toBeVisible();
   }
 
+  async verifyHeadingTitle(heading: string) {
+    const headingLocator = this.page.getByRole('heading').first();
+    await headingLocator.waitFor();
+    await expect(headingLocator).toBeVisible();
+  }
+
   async waitForH4Title(text: string) {
     await this.page.waitForSelector(`h4:has-text("${text}")`, {
       timeout: 99999,

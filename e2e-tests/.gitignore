@@ -52,15 +52,24 @@ site
 
 .turbo
 
+.github
+
 # Playwright
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/playwright/backup_tests/
+/playwright/e2e/examples/
+/env/
+
+# IntelliJ
+.idea
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-
-# IntelliJ
-.idea
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

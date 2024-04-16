@@ -15,6 +15,7 @@ export class Common {
 
   async loginAsGuest() {
     await this.page.goto('/');
+    await this.page.waitForLoadState('load'); 
     await this.uiHelper.verifyHeading('Select a sign-in method');
     await this.uiHelper.clickButton('Enter');
     await this.uiHelper.waitForSideBarVisible();
@@ -48,6 +49,7 @@ export class Common {
   async loginAsGithubUser() {
     await this.logintoGithub();
     await this.page.goto('/');
+    await this.page.waitForLoadState('load'); 
     await this.uiHelper.clickButton('Sign In');
     await this.checkAndReauthorizeGithubApp();
     await this.uiHelper.waitForSideBarVisible();

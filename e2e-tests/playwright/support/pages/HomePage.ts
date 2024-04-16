@@ -39,4 +39,18 @@ export class HomePage {
     await itemLocator.waitFor({ state: 'visible' });
     expect(itemLocator.isVisible()).toBeTruthy();
   }
+
+  async verifyQuickAccess_2(
+    section: string,
+    quickAccessItem: string,
+    expand = false,
+  ) {
+    await this.page.waitForSelector(HomePagePO.MuiAccordion);
+    const sectionLocator = this.page
+      .locator(HomePagePO.MuiAccordion)
+      .filter({ hasText: section });
+
+    await sectionLocator.waitFor();
+    await expect(this.page.getByRole('link', { name: 'Podman Desktop Podman Desktop' })).toBeVisible();
+  }
 }

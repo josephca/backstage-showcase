@@ -59,14 +59,9 @@ site
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/env/
 /playwright/backup_tests/
 /playwright/e2e/examples/
-
+/env/
 
 # IntelliJ
 .idea

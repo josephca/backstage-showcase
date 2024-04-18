@@ -19,7 +19,9 @@ trap cleanup EXIT
 add_helm_repos() {
   helm version
 
-  declare -a repos=("bitnami=https://charts.bitnami.com/bitnami" "backstage=https://backstage.github.io/charts" "janus-idp=https://janus-idp.github.io/helm-backstage" "${HELM_REPO_NAME}=${HELM_REPO_URL}")
+  declare -a repos=("bitnami=https://charts.bitnami.com/bitnami" \
+    "backstage=https://backstage.github.io/charts" \
+    "${HELM_REPO_NAME}=${HELM_REPO_URL}")
 
   for repo in "${repos[@]}"; do
     key="${repo%%=*}"
@@ -183,13 +185,16 @@ main() {
 
   add_helm_repos
 
-  GIT_PR_RESPONSE=$(curl -s "https://api.github.com/repos/${GITHUB_ORG_NAME}/${GITHUB_REPOSITORY_NAME}/pulls/${GIT_PR_NUMBER}")
-  LONG_SHA=$(echo "$GIT_PR_RESPONSE" | jq -r '.head.sha')
-  SHORT_SHA=$(git rev-parse --short ${LONG_SHA})
+  # GIT_PR_RESPONSE=$(curl -s "https://api.github.com/repos/${GITHUB_ORG_NAME}/${GITHUB_REPOSITORY_NAME}/pulls/${GIT_PR_NUMBER}")
+  # LONG_SHA=$(echo "$GIT_PR_RESPONSE" | jq -r '.head.sha')
+  # SHORT_SHA=$(git rev-parse --short ${LONG_SHA})
 
-  echo "Tag name with short SHA: pr-${GIT_PR_NUMBER}-${SHORT_SHA}"
+  # echo "Tag name with short SHA: pr-${GIT_PR_NUMBER}-${SHORT_SHA}"
 
-  helm upgrade -i ${RELEASE_NAME} -n ${NAME_SPACE} ${HELM_REPO_NAME}/${HELM_IMAGE_NAME} --version ${CHART_VERSION} -f $DIR/value_files/${HELM_CHART_VALUE_FILE_NAME} --set global.clusterRouterBase=${K8S_CLUSTER_ROUTER_BASE} --set upstream.backstage.image.tag=pr-${GIT_PR_NUMBER}-${SHORT_SHA}
+  # helm upgrade -i ${RELEASE_NAME} -n ${NAME_SPACE} ${HELM_REPO_NAME}/${HELM_IMAGE_NAME} --version ${CHART_VERSION} -f $DIR/value_files/${HELM_CHART_VALUE_FILE_NAME} --set global.clusterRouterBase=${K8S_CLUSTER_ROUTER_BASE} --set upstream.backstage.image.tag=pr-${GIT_PR_NUMBER}-${SHORT_SHA}
+  helm upgrade ${RELEASE_NAME} -n ${NAME_SPACE} -i "${CHART_URL}" \
+    -f ${HELM_CHART_VALUE_FILE_NAME} \
+    --set global.clusterRouterBase=${K8S_CLUSTER_ROUTER_BASE}
 
   echo "Waiting for backstage deployment..."
   sleep 500

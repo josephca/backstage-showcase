@@ -2,15 +2,15 @@
 
 set -e
 
-# Variáveis globais
 LOGFILE="pr-${GIT_PR_NUMBER}-openshift-tests-${BUILD_NUMBER}"
 TEST_NAME="backstage-showcase Tests"
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cleanup() {
   echo "Cleaning up before exiting"
-  helm uninstall ${RELEASE_NAME} -n ${NAME_SPACE}
-  oc delete namespace ${NAME_SPACE}
+  # leave the namespace for debugging purpose. A new PR will refresh the namespace anyways.
+  # helm uninstall ${RELEASE_NAME} -n ${NAME_SPACE}
+  # oc delete namespace ${NAME_SPACE}
   rm -rf ~/tmpbin
 }
 
@@ -87,8 +87,10 @@ apply_yaml_files() {
   # Update namespace and other configurations in YAML files
   local files=("$dir/resources/service_account/service-account-rhdh.yaml"
     "$dir/resources/cluster_role_binding/cluster-role-binding-k8s.yaml"
-    "$dir/resources/cluster_role_binding/cluster-role-binding-ocm.yaml")
-  
+    "$dir/resources/cluster_role_binding/cluster-role-binding-ocm.yaml"
+    "$dir/resources/deployment/deployment-test-app-component.yaml"
+    "$dir/auth/secrets-rhdh-secrets.yaml")  
+
   for file in "${files[@]}"; do
     sed -i "s/namespace:.*/namespace: $NAME_SPACE/g" "$file"
   done

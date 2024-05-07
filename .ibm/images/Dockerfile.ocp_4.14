@@ -8,7 +8,7 @@ ENV CI=1 \
 
 # Define Helm and OpenShift CLI (oc) versions
 ENV HELM_VERSION="v3.12.3"
-ENV OC_VERSION="4.14.3"
+ENV OC_VERSION="4.14.20"
 
 ARG CI_XBUILD
 
@@ -75,8 +75,7 @@ RUN curl -fsSL -o /tmp/openshift-client-linux.tar.gz "https://mirror.openshift.c
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-RUN go install github.com/kadel/pr-commenter@latest && \
-    ibmcloud plugin install -f cloud-object-storage && \
+RUN ibmcloud plugin install -f cloud-object-storage && \
     ibmcloud plugin install -f kubernetes-service
 
 WORKDIR /tmp/
